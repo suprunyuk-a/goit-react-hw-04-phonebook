@@ -13,8 +13,8 @@ export function App() {
     { id: 'id-2', name: 'Hermione Kline', number: '443-89-12' },
     { id: 'id-3', name: 'Eden Clements', number: '645-17-79' },
     { id: 'id-4', name: 'Annie Copeland', number: '227-91-26' },
-  ])
-  const [filter, setFilter] = useState("");
+  ]);
+  const [filter, setFilter] = useState('');
 
   useEffectOnce(() => {
     const localStrContacts = localStorage.getItem('contacts');
@@ -37,7 +37,7 @@ export function App() {
     }
   });
 
-  useEffect(()=> {
+  useEffect(() => {
     localStorage.setItem('contacts', JSON.stringify(contacts));
   }, [contacts]);
 
@@ -61,13 +61,13 @@ export function App() {
       return false;
     }
     setContacts([
-        ...contacts,
-        {
-          id: nanoid(),
-          name: name.trim(),
-          number: number.trim(),
-        },
-      ]);
+      ...contacts,
+      {
+        id: nanoid(),
+        name: name.trim(),
+        number: number.trim(),
+      },
+    ]);
     return true;
   };
 
@@ -91,28 +91,21 @@ export function App() {
     <Container>
       <Toaster position="top-right" />
       <h1>Phonebook</h1>
-      <ContactForm
-        addContact={addContact}
-      />
+      <ContactForm addContact={addContact} />
 
       <h2>Contacts</h2>
+
       {contacts.length > 0 ? (
         <>
-          <Filter
-            filter={filter}
-            handleFilter={handleChange}
-          />
-          {getContacts().length > 0 ? (
-            <ContactList
-              contacts={getContacts()}
-              handleDelete={handleDelete}
-            />
-          ) : (
-            <p>{emptyFilterMsg}</p>
-          )}
+          <Filter filter={filter} handleFilter={handleChange} />
         </>
       ) : (
         <p>{emptyMsg}</p>
+      )}
+      {getContacts().length > 0 ? (
+        <ContactList contacts={getContacts()} handleDelete={handleDelete} />
+      ) : (
+        <p>{emptyFilterMsg}</p>
       )}
     </Container>
   );
