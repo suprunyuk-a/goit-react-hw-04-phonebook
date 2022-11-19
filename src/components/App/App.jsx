@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react';
-import { useEffectOnce } from '../../helpers/useEffectOnce';
 import { Container } from './App.styled';
 import { ContactForm } from '../ContactForm';
 import { ContactList } from '../ContactList';
@@ -8,34 +7,12 @@ import toast, { Toaster } from 'react-hot-toast';
 import { nanoid } from 'nanoid';
 
 export function App() {
-  const [contacts, setContacts] = useState([
-    { id: 'id-1', name: 'Rosie Simpson', number: '459-12-56' },
-    { id: 'id-2', name: 'Hermione Kline', number: '443-89-12' },
-    { id: 'id-3', name: 'Eden Clements', number: '645-17-79' },
-    { id: 'id-4', name: 'Annie Copeland', number: '227-91-26' },
-  ]);
+  const [contacts, setContacts] = useState(
+    !localStorage.getItem('contacts')
+      ? ''
+      : JSON.parse(localStorage.getItem('contacts'))
+  );
   const [filter, setFilter] = useState('');
-
-  useEffectOnce(() => {
-    const localStrContacts = localStorage.getItem('contacts');
-    if (!localStrContacts) {
-      return;
-    }
-    try {
-      const localContacts = JSON.parse(localStrContacts);
-      if (!(localContacts instanceof Array)) {
-        this.toastAlert(
-          'Error of reading localStorage contacts: array expected'
-        );
-        return;
-      }
-      setContacts([...localContacts]);
-    } catch (exc) {
-      this.toastAlert(
-        'Error of reading localStorage contacts: JSON data is invalid'
-      );
-    }
-  });
 
   useEffect(() => {
     localStorage.setItem('contacts', JSON.stringify(contacts));
@@ -53,10 +30,10 @@ export function App() {
   };
 
   const addContact = ({ name, number }) => {
-    const found = contacts.findIndex(
+    const found = contacts.find(
       el => el.name.trim().toUpperCase() === name.trim().toUpperCase()
     );
-    if (found >= 0) {
+    if (found) {
       toastAlert(`${name} already exists`);
       return false;
     }
